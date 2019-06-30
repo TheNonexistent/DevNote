@@ -1,11 +1,16 @@
 const {remote} = require('electron');
+const {ipcRenderer} = require('electron');
 const helper = require('./js/helper.js'); // Helper module contain functions for general use
+const jsPDF = require('jspdf');
+const {dialog} = require("electron").remote;
+const fs = require('fs');
 
 let win = remote.getCurrentWindow();
 let maintext = document.getElementById("main-text");
 
 // Add a listener for the main editor to update it upon clicking parse.
 helper.addEvent(document, "click", "#parse-btn", UpdateMain);
+helper.addEvent(document, "click", "#export-btn", ExportMain);
 
 // Toolbar 
 helper.addEvent(document, "click", "#exit-btn", function (evnt) {
@@ -57,4 +62,18 @@ function UpdateMain()
             hljs.highlightBlock(selected);
         }
     });
-}   
+}
+
+function ExportMain()
+{
+    var pdfdoc = new jsPDF();     
+    var handler = {
+        '#ignore-pdf': function (element, renderer) {
+        return true;
+        }
+    };
+    pdfdoc.fromHTML(maintext,15,15,{
+        'width': 180,'elementHandlers': handler
+        });
+        pdfdoc.save();
+}

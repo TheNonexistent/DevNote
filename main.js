@@ -1,9 +1,15 @@
 const {app, BrowserWindow} = require('electron')
 
+const electron = require('electron');
+
+const fs = require('fs');
+
 const path = require('path')  
 
-require('electron-reload')(__dirname);
+const ipc = electron.ipcMain;
 
+
+require('electron-reload')(__dirname);
 
 let win
 
@@ -16,7 +22,6 @@ function createWindow ()
         minHeight: 600,
         frame: false,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true
         }
     })
