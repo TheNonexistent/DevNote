@@ -3,7 +3,7 @@ const helper = require('./js/helper.js'); // Helper module contain functions for
 
 
 let win = remote.getCurrentWindow();
-let maintext = document.getElementById("MainText");
+let maintext = document.getElementById("main-text");
 
 // Add a listener for the main editor to update it upon clicking parse.
 helper.addEvent(document, "click", "#parse-btn", updateMain);
@@ -14,17 +14,13 @@ helper.addEvent(document, "click", "#exit-btn", function (evnt) {
 });
 
 helper.addEvent(document, "click", "#max-btn", function (evnt) {
-    if (win.isMaximized())
-        win.unmaximize();
-    else
-        win.maximize();    
+    if (win.isMaximized()) { win.unmaximize(); }
+    else { win.maximize(); }    
 });
 
 helper.addEvent(document, "click", "#min-btn", function (evnt) {
     win.minimize();
 });
-
-
 
 function updateMain()
 {
@@ -40,13 +36,25 @@ function updateMain()
         {
             line = line.slice(0, -6);
         }
-        console.log(line);
-        if (line.includes("&lt;code&gt;") && iscode == false) { iscode = true; maintext.children[index - 1].innerHTML = " "; return; }
-        if (line.includes("&lt;/code&gt;") && iscode == true) { iscode = false; maintext.children[index - 1].innerHTML = " "; return; }
+        if (line.includes("&lt;code&gt;") && iscode == false) 
+        { 
+            iscode = true; 
+            maintext.children[index - 1].innerHTML = " "; 
+            return; 
+        }
+
+        if (line.includes("&lt;/code&gt;") && iscode == true) 
+        { 
+            iscode = false; 
+            maintext.children[index - 1].innerHTML = " "; 
+            return; 
+        }
         selected = maintext.children[index - 1]; //previous
-        if (iscode == true)
+
+        
+        if (iscode === true)
         {
             hljs.highlightBlock(selected);
         }
     });
-}
+}   
