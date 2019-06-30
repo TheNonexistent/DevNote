@@ -1,18 +1,32 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
+const {remote} = require('electron');
+const helper = require('./js/helper.js'); // Helper module contain functions for general use
 
 
-
+let win = remote.getCurrentWindow();
 let maintext = document.getElementById("MainText");
-let parsebtn = document.getElementById("ParseButton");
 
-//Addind a listener for the main editor to update it upon clicking parse.
+// Add a listener for the main editor to update it upon clicking parse.
+helper.addEvent(document, "click", "#parse-btn", updateMain);
 
-parsebtn.addEventListener("click", UpdateMain);
+// Toolbar 
+helper.addEvent(document, "click", "#exit-btn", function (evnt) {
+    win.close();
+});
+
+helper.addEvent(document, "click", "#max-btn", function (evnt) {
+    if (win.isMaximized())
+        win.unmaximize();
+    else
+        win.maximize();    
+});
+
+helper.addEvent(document, "click", "#min-btn", function (evnt) {
+    win.minimize();
+});
 
 
-function UpdateMain()
+
+function updateMain()
 {
     var iscode = false;
     var isbold = false;

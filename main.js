@@ -9,7 +9,10 @@ function createWindow ()
         minWidth: 800,
         height: 600,
         minHeight: 600,
-        frame: false
+        frame: false,
+        webPreferences: {
+            nodeIntegration: true
+        }
     })
 
     win.loadFile('index.html')

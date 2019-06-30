@@ -1,0 +1,36 @@
+html {
+  -webkit-app-region: drag;
+  height: 100%;
+}
+
+body {
+  height: 86%;
+  background: #343D46;
+  color: #C0C5CE;
+}
+
+.toolbar ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.toolbar ul li {
+  font-size: 1.2em;
+  margin: 2px;
+}
+.toolbar ul li a {
+  -webkit-app-region: no-drag;
+  color: #4F5B66;
+  text-decoration: none;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  text-align: center;
+}
+.toolbar ul li a:hover {
+  color: #65737E;
+  background-color: #4F5B66;
+}
+
+/*# sourceMappingURL=main.css.map */

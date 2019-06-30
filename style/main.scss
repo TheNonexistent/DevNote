@@ -1,0 +1,46 @@
+$background-color: #343D46;
+$element-color: #4F5B66;
+$hover-color: #65737E;
+$btn-color: #A7ADBA;
+$primary-color: #C0C5CE;
+
+html {
+    -webkit-app-region: drag;
+    height: 100%;
+}
+
+body {
+    height: 86%;
+    background: $background-color;
+    color: $primary-color;
+}
+
+.toolbar {
+
+    ul {
+        list-style: none;
+        display: flex;
+        flex-direction: row-reverse;
+
+        li {
+            font-size: 1.2em;
+            margin: 2px;
+
+            a {
+                -webkit-app-region: no-drag;
+                color: $element-color;
+                text-decoration: none;
+                display: inline-block;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                text-align: center;
+
+                &:hover{
+                    color: $hover-color;
+                    background-color: $element-color;
+                }
+            }
+        }
+    }
+}
