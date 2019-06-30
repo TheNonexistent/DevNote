@@ -1,12 +1,11 @@
 const {remote} = require('electron');
 const helper = require('./js/helper.js'); // Helper module contain functions for general use
 
-
 let win = remote.getCurrentWindow();
 let maintext = document.getElementById("main-text");
 
 // Add a listener for the main editor to update it upon clicking parse.
-helper.addEvent(document, "click", "#parse-btn", updateMain);
+helper.addEvent(document, "click", "#parse-btn", UpdateMain);
 
 // Toolbar 
 helper.addEvent(document, "click", "#exit-btn", function (evnt) {
@@ -22,7 +21,9 @@ helper.addEvent(document, "click", "#min-btn", function (evnt) {
     win.minimize();
 });
 
-function updateMain()
+//exportbtn.addEventListener("click", ExportPdf);
+
+function UpdateMain()
 {
     var iscode = false;
     var isbold = false;
@@ -51,8 +52,7 @@ function updateMain()
         }
         selected = maintext.children[index - 1]; //previous
 
-        
-        if (iscode === true)
+        if (iscode === true && selected.innerHTML != "")
         {
             hljs.highlightBlock(selected);
         }
