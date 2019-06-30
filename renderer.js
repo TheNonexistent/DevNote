@@ -14,6 +14,7 @@ helper.addEvent(document, "click", "#parse-btn", UpdateMain);
 helper.addEvent(document, "click", "#export-btn", ExportMain);
 helper.addEvent(document, "click", "#save-btn", SaveMain);
 helper.addEvent(document, "click", "#open-btn", LoadMain);
+helper.addEvent(document, "click", "#new-btn", NewMain);
 
 // Toolbar 
 helper.addEvent(document, "click", "#exit-btn", function (evnt) {
@@ -94,6 +95,10 @@ function SaveMain()
     {
         options.defaultPath = filepath.innerHTML;
     }
+    else
+    {
+        options.defaultPath = "NewFile.dn";
+    }
     var filename = dialog.showSaveDialog(options);
     if (filename === undefined) { alert("You Must Specify A Filename"); }
     else
@@ -130,4 +135,23 @@ function LoadMain()
                 });
     }
     ondisk = true;
+}
+
+function NewMain()
+{
+    options = {
+        type : "warning",
+        buttons : ["Yes", "Cancel"],
+        defaultId : 1,
+        title : "Warning",
+        message : "All Progress Will Be Lost. Are You Sure You Want To Continue?",
+        cancelId : 1,
+
+    };
+    var response = dialog.showMessageBox(options);
+    if(response === 0)
+    {
+        maintext.innerHTML = "<div><br></div>";
+        filepath.innerHTML = "NewFile";
+    }
 }
