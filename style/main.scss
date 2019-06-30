@@ -4,6 +4,8 @@ $hover-color: #65737E;
 $btn-color: #A7ADBA;
 $primary-color: #C0C5CE;
 
+$width: 95%;
+
 html {
     -webkit-app-region: drag;
     height: 100%;
@@ -13,6 +15,16 @@ body {
     height: 86%;
     background: $background-color;
     color: $primary-color;
+    font-size: 18px;
+    font-family: sans-serif;
+}
+
+button {
+    -webkit-app-region: no-drag;
+}
+
+h2 {
+    margin: 10px 0;
 }
 
 .toolbar {
@@ -21,9 +33,10 @@ body {
         list-style: none;
         display: flex;
         flex-direction: row-reverse;
+        margin: 5px auto 15px;
 
         li {
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin: 2px;
 
             a {
@@ -41,6 +54,68 @@ body {
                     background-color: $element-color;
                 }
             }
+        }
+    }
+}
+
+.container {
+    width: 95%;
+    margin: 0 auto;
+}
+
+#main-text {
+    -webkit-app-region: no-drag;
+    border-bottom: 1px solid $element-color;
+    margin-top: 25px;
+    outline: none;
+    padding-bottom: 10px;
+
+    .hljs {
+        font-size: .9em;
+    
+        &:first-child {
+            margin-top: 10px;
+        }        
+
+        &:last-child {
+            margin-bottom: 10px;
+        }
+    }
+    
+}
+
+.footer {
+    width: $width;
+    margin-top: 10px;
+}
+
+.menu {
+    position: fixed;
+    background: $background-color;
+    border: 1px solid $element-color;
+    border-radius: 5px;
+    right: 5%;
+    bottom: 2%;
+    opacity: 0.3;
+    z-index: 999;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    button {
+        display: block;
+        width: 100px;
+        margin: 8px 10px;
+        padding: 5px 5px;
+        border-radius: 5px;
+        border: 1px solid $element-color;
+        background: $hover-color;
+        color: $background-color;
+
+        &:hover {
+            background-color: $btn-color;
+            cursor: pointer;
         }
     }
 }

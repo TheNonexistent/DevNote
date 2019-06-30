@@ -7,15 +7,26 @@ body {
   height: 86%;
   background: #343D46;
   color: #C0C5CE;
+  font-size: 18px;
+  font-family: sans-serif;
+}
+
+button {
+  -webkit-app-region: no-drag;
+}
+
+h2 {
+  margin: 10px 0;
 }
 
 .toolbar ul {
   list-style: none;
   display: flex;
   flex-direction: row-reverse;
+  margin: 5px auto 15px;
 }
 .toolbar ul li {
-  font-size: 1.2em;
+  font-size: 1.1em;
   margin: 2px;
 }
 .toolbar ul li a {
@@ -31,6 +42,61 @@ body {
 .toolbar ul li a:hover {
   color: #65737E;
   background-color: #4F5B66;
+}
+
+.container {
+  width: 95%;
+  margin: 0 auto;
+}
+
+#main-text {
+  -webkit-app-region: no-drag;
+  border-bottom: 1px solid #4F5B66;
+  margin-top: 25px;
+  outline: none;
+  padding-bottom: 10px;
+}
+#main-text .hljs {
+  font-size: 0.9em;
+}
+#main-text .hljs:first-child {
+  margin-top: 10px;
+}
+#main-text .hljs:last-child {
+  margin-bottom: 10px;
+}
+
+.footer {
+  width: 95%;
+  margin-top: 10px;
+}
+
+.menu {
+  position: fixed;
+  background: #343D46;
+  border: 1px solid #4F5B66;
+  border-radius: 5px;
+  right: 5%;
+  bottom: 2%;
+  opacity: 0.3;
+  z-index: 999;
+}
+.menu:hover {
+  opacity: 1;
+}
+.menu button {
+  display: block;
+  width: 100px;
+  margin: 8px 10px;
+  padding: 5px 5px;
+  border-radius: 5px;
+  border: 1px solid #4F5B66;
+  background: #65737E;
+  color: #343D46;
+}
+.menu button:hover {
+  background-color: #A7ADBA;
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=main.css.map */
