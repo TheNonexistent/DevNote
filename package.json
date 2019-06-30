@@ -1,0 +1,22 @@
+{
+  "name": "DevNote",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "./node_modules/.bin/electron ."
+  },
+  "repository": "https://github.com/TheNonexistent/DevNote",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "TheNonexistent",
+  "license": "GNU GPLv3",
+  "devDependencies": {
+    "electron": "^5.0.5"
+  }
+}
