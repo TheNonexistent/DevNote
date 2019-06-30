@@ -6,11 +6,14 @@ const {dialog} = require("electron").remote;
 const fs = require('fs');
 
 let win = remote.getCurrentWindow();
-let maintext = document.getElementById("main-text");
 
-// Add a listener for the main editor to update it upon clicking parse.
+let maintext = document.getElementById("main-text");
+let filepath = document.getElementsByClassName("address")[0];
+// Button Listeners.
 helper.addEvent(document, "click", "#parse-btn", UpdateMain);
 helper.addEvent(document, "click", "#export-btn", ExportMain);
+helper.addEvent(document, "click", "#save-btn", SaveMain);
+helper.addEvent(document, "click", "#open-btn", LoadMain);
 
 // Toolbar 
 helper.addEvent(document, "click", "#exit-btn", function (evnt) {
@@ -27,6 +30,9 @@ helper.addEvent(document, "click", "#min-btn", function (evnt) {
 });
 
 //exportbtn.addEventListener("click", ExportPdf);
+
+var ondisk = false;// This variable determines if there is an actual file on disk for the current buffer, this is used to set a default path for open and save dialogs
+
 
 function UpdateMain()
 {
@@ -76,4 +82,52 @@ function ExportMain()
         'width': 180,'elementHandlers': handler
         });
         pdfdoc.save();
+}
+
+function SaveMain()
+{
+    var options = {
+        title : "Save",
+        buttonLabel : "Save"
+    };
+    if (ondisk)
+    {
+        options.defaultPath = filepath.innerHTML;
+    }
+    var filename = dialog.showSaveDialog(options);
+    if (filename === undefined) { alert("You Must Specify A Filename"); }
+    else
+    {
+        fs.writeFile(filename, maintext.innerHTML, (error) => {
+            if (error) { alert("Could Not Save The File"); }
+            else { alert("File Saved"); filepath.innerHTML = filename; }
+        });
+    }
+    ondisk = true;
+}
+
+function LoadMain()
+{
+    var options = {
+        title : "Open",
+        buttonLabel : "Open"
+    };
+    if (ondisk)
+    {
+        options.defaultPath = filepath.innerHTML;
+    }
+    var filename = dialog.showOpenDialog(options);
+    if (filename === undefined) { alert("You Must Specify A Filename"); }
+    else
+    {
+       fs.readFile(filename[0], (error, buffer) => {
+                    if (error) { alert("Could Not Open The File"); }
+                    else 
+                    { 
+                        maintext.innerHTML = buffer.toString();
+                        filepath.innerHTML = filename;
+                    }
+                });
+    }
+    ondisk = true;
 }
