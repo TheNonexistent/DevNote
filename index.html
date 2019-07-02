@@ -3,7 +3,7 @@
     <head> 
         <meta charset="utf-8">
         <link rel="stylesheet" href="./style/main.css">
-        <link rel="stylesheet" href="./vendor/highlight/css/default.css">
+        <link rel="stylesheet" href="./vendor/highlight/css/solarized-dark.css">
     </head>
     <body>
         <div class="toolbar">
@@ -15,7 +15,7 @@
         </div>
         <div class="container">
             <h2>DevNote</h2>
-            <div id="main-text" contenteditable><div><br></div></div>
+            <div id="main-text" contenteditable></div>
             <div class="footer">
                 <span class="address">NewFile</span>
             </div>
@@ -31,7 +31,22 @@
         </div>
         
     </body>
+    <script>
+        // Based on @ram-g-athreya answer on SO
+        // https://stackoverflow.com/questions/18552336/prevent-contenteditable-adding-div-on-enter-chrome
+        document.getElementById("main-text").onkeydown = function(e) {
+            // trap the return key being pressed
+            if (e.keyCode === 13) 
+            {
+            // insert 2 br tags (if only one br tag is inserted the cursor won't go to the next line)
+            document.execCommand('insertHTML', false, '<br><br>');
+            // prevent the default behaviour of return key pressed
+            return false;
+            }
+        }
+    </script>
     <script src="./vendor/highlight/highlight.pack.js" charset="utf-8"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script>
         require('./renderer.js');
     </script>

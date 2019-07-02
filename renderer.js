@@ -9,6 +9,10 @@ let win = remote.getCurrentWindow();
 
 let maintext = document.getElementById("main-text");
 let filepath = document.getElementsByClassName("address")[0];
+
+//Initiating highlight js
+hljs.initHighlighting();
+
 // Button Listeners.
 helper.addEvent(document, "click", "#parse-btn", UpdateMain);
 helper.addEvent(document, "click", "#export-btn", ExportMain);
@@ -40,18 +44,26 @@ function UpdateMain()
     var text = maintext.innerHTML;
     var textarray = [...text];
 
-    var insidetag = false 
-    var insideendtag = false;
+    var insidetag = false;
     var tagstartindex;
-    var tagendindex;
 
-    var tags = [];
+    var tagname = [];
+
+    var blocks = [];
     var tagid = 0;
 
-    function tag(tagname, tagendname, startindex, endindex)
+    var tagsstart = [];
+    var tagsend = [];
+
+    function tag(tagname, index)
     {
         this.tagname = tagname;
-        this.tagendname = tagendname;
+        this.index = index;
+    }
+
+    function tags(tagname, startindex, endindex)
+    {
+        this.tagname = tagname;
         this.startindex = startindex;
         this.endindex = endindex;
     }
@@ -63,13 +75,14 @@ function UpdateMain()
 
         if (first)
         {
-            tags[tagid] = new tag([], [], 0, 0);
+            tagsstart[tagid] = new tag([], 0);
+            tagname = [];
             first = false;
         }
 
         if (textarray.slice(i, i + 4).join("") == "&lt;" && textarray.slice(i, i + 5).join("") != "&lt;/" && insidetag == false) //[ '&', 'l', 't', ';', 'c', 'o', 'd', 'e', '&', 'g', 't', ';' ]
         {
-            tags[tagid].startindex = i + 4;
+            tagsstart[tagid].index = i + 4;
             tagstartindex = i + 4;
             insidetag = true;
             continue;
@@ -77,64 +90,100 @@ function UpdateMain()
         else if(textarray.slice(i, i + 4).join("") == "&gt;" && insidetag == true)
         {
             insidetag = false;
-            continue;
-        }
-        else if (insidetag && i >= tagstartindex)
-        {
-            tags[tagid].tagname.push(textarray[i]);
-        }
-
-        if (textarray.slice(i, i + 5).join("") == "&lt;/" && insideendtag == false) //[ '&', 'l', 't', ';', 'c', 'o', 'd', 'e', '&', 'g', 't', ';' ]
-        {
-            tags[tagid].endindex = i;
-            tagstartindex = i + 5;
-            insideendtag = true;
-            continue;
-        }
-        else if(textarray.slice(i, i + 4).join("") == "&gt;" && insideendtag == true)
-        {
-            insideendtag = false;
-            tags[tagid] =  tags[tagid];
             tagid++;
             first = true;
             continue;
         }
-        else if (insideendtag && i >= tagstartindex)
+        else if (insidetag && i >= tagstartindex)
         {
-            tags[tagid].tagendname.push(textarray[i]);
+            tagname.push(textarray[i]);
         }
-    // instance.tagname = instance.tagname.join("");
-    // instance.tagendname = instance.tagendname.join("");
-    }
-    
-    tags.pop();//Popping the extra value wich is always created.
-    for (id in tags)
-    {
-        console.log(tags[id].tagname == tags[id].tagendname);
-        if (true) //Array(tags[0].tagname).join("") == "code" && tags[id].tagname === tags[id].tagendname
-        {
-            var difference = id*(([...'<div class="code-text">'].length + [...'</div>'].length) - (("&lt;".length + tags[id].tagname.length + "&gt;".length + "&lt:/".length) + (tags[id].tagname.length + "&gt;".length)));//Difference in index created by previous added divs to the text
 
-            textarray = helper.insertArray(textarray, [...'<div class="code-text">'], (tags[id].startindex + tags[id].tagname.length + 4) + difference); //After < + the name of the tag + >
-            textarray = helper.insertArray(textarray, [...'</div>'], (tags[id].endindex + [...'<div class="code-text">'].length) + difference); //Considering the new addition to the array. so we should shift the index.
+        tagsstart[tagid].tagname = tagname.join("");
+    }
+    tagsstart.pop();//Popping the extra value wich is always created.
+
+    tagid = 0;
+    insidetag = false;
+    first = true;
+    for (i in textarray)
+    {
+        i = parseInt(i);
+
+        if (first)
+        {
+            tagsend[tagid] = new tag([], 0);
+            tagname = [];
+            first = false;
+        }
+
+        if (textarray.slice(i, i + 5).join("") == "&lt;/" && insidetag == false) //[ '&', 'l', 't', ';', 'c', 'o', 'd', 'e', '&', 'g', 't', ';' ]
+        {
+            tagsend[tagid].index = i;
+            tagstartindex = i + 5;
+            insidetag = true;
+            continue;
+        }
+        else if(textarray.slice(i, i + 4).join("") == "&gt;" && insidetag == true)
+        {
+            insidetag = false;
+            tagid++;
+            first = true;
+            continue;
+        }
+        else if (insidetag && i >= tagstartindex)
+        {
+            tagname.push(textarray[i]);
+        }
+        tagsend[tagid].tagname = tagname.join("");
+    }
+    tagsend.pop();//Popping the extra value wich is always created.
+    console.log(tagsstart);
+    console.log(tagsend);
+
+    tagsstart.forEach((start,index) =>
+    {
+        tagsend.forEach((end,eindex) =>
+        {
+            if (start.tagname === end.tagname)
+            {
+                blocks.push(new tags(start.tagname, start.index, end.index));
+                return;
+            }
+        });
+        
+    });
+
+     for (id in blocks)
+     {
+         if (blocks[id].tagname == "code")
+         {
+             var difference = id*(([...'<pre><code>'].length + [...'</code></pre>'].length) - (("&lt;".length + blocks[id].tagname.length + "&gt;".length + "&lt:/".length) + (blocks[id].tagname.length + "&gt;".length)));//Difference in index created by previous added divs to the text
+
+             textarray = helper.insertArray(textarray, [...'<pre><code>'], (blocks[id].startindex + blocks[id].tagname.length + 4) + difference); //After < + the name of the tag + >
+             textarray = helper.insertArray(textarray, [...'</code></pre>'], (blocks[id].endindex + [...'<pre><code>'].length) + difference); //Considering the new addition to the array. so we should shift the index.
             
-            //Removing the tags
-            textarray.splice((tags[id].startindex - 4) + difference,"&lt;".length + tags[id].tagname.length + "&gt;".length);
-            textarray.splice((tags[id].endindex + [...'<div class="code-text">'].length + [...'</div>'].length - ("&lt;".length + tags[id].tagname.length + "&gt;".length) + difference), "&lt:/".length + tags[id].tagname.length + "&gt;".length);
+             //Removing the tags
+             textarray.splice((blocks[id].startindex - 4) + difference,"&lt;".length + blocks[id].tagname.length + "&gt;".length);
+             textarray.splice((blocks[id].endindex + [...'<pre><code>'].length + [...'</code></pre>'].length - ("&lt;".length + blocks[id].tagname.length + "&gt;".length) + difference), "&lt:/".length + blocks[id].tagname.length + "&gt;".length);
             
-            maintext.innerHTML = textarray.join("");
+             maintext.innerHTML = textarray.join("");
 
             /*I know, I know, this part of the code is really really horrible and hard to understand.
-            I will fix  it, I promise.*/
-        }
-    }
+             I will fix  it, I promise.*/ 
+         }
+     }
+
+    hljs.initHighlighting.called = false;
+    hljs.initHighlighting();
 
     //Submitting all the addded divs to the highlighter
-    let codediv = document.getElementsByClassName("code-text");
-    for (div in codediv)
-    {
-        hljs.highlightBlock(codediv[div]);
-    }
+    // let codediv = document.getElementsByClassName("code-text");
+    // for (div in codediv)
+    // {
+    //     console.log(codediv[div]);
+    //     hljs.highlightBlock(codediv[div]);
+    // }
 }
 
 function ExportMain()
