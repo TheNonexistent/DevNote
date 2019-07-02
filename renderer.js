@@ -108,12 +108,10 @@ function UpdateMain()
     }
     
     tags.pop();//Popping the extra value wich is always created.
-    console.log(tags);
-    console.log(typeof Array(tags[0].tagname), Array(tags[0].tagname));
     for (id in tags)
     {
         console.log(tags[id].tagname == tags[id].tagendname);
-        if (true)
+        if (true) //Array(tags[0].tagname).join("") == "code" && tags[id].tagname === tags[id].tagendname
         {
             var difference = id*(([...'<div class="code-text">'].length + [...'</div>'].length) - (("&lt;".length + tags[id].tagname.length + "&gt;".length + "&lt:/".length) + (tags[id].tagname.length + "&gt;".length)));//Difference in index created by previous added divs to the text
 
@@ -125,7 +123,6 @@ function UpdateMain()
             textarray.splice((tags[id].endindex + [...'<div class="code-text">'].length + [...'</div>'].length - ("&lt;".length + tags[id].tagname.length + "&gt;".length) + difference), "&lt:/".length + tags[id].tagname.length + "&gt;".length);
             
             maintext.innerHTML = textarray.join("");
-            console.log(textarray.join(""));
 
             /*I know, I know, this part of the code is really really horrible and hard to understand.
             I will fix  it, I promise.*/
