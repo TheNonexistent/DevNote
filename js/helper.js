@@ -7,3 +7,8 @@ exports.addEvent = function addEvent(parent, evt, selector, handler)
     { handler.apply(event.target.closest(selector), arguments); }
   }, false);    
 }
+
+exports.insertArray = function insertArray(array1, array2,insertindex)
+{
+  return array1.slice(0, insertindex).concat(array2).concat(array1.slice(insertindex));
+}
