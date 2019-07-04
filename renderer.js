@@ -10,9 +10,6 @@ let win = remote.getCurrentWindow();
 let maintext = document.getElementById("main-text");
 let filepath = document.getElementsByClassName("address")[0];
 
-//Initiating highlight js
-hljs.initHighlighting();
-
 // Button Listeners.
 helper.addEvent(document, "click", "#parse-btn", UpdateMain);
 helper.addEvent(document, "click", "#export-btn", ExportMain);
@@ -55,10 +52,11 @@ function UpdateMain()
     var tagsstart = [];
     var tagsend = [];
 
-    function tag(tagname, index)
+    function tag(tagname, index, isused = false)
     {
         this.tagname = tagname;
         this.index = index;
+        this.isused = isused;
     }
 
     function tags(tagname, startindex, endindex)
@@ -138,21 +136,27 @@ function UpdateMain()
         tagsend[tagid].tagname = tagname.join("");
     }
     tagsend.pop();//Popping the extra value wich is always created.
+
+    mainloop:
+    for (id in tagsstart)
+    {
+    nestedloop:
+        for(endid in tagsend)
+        {
+            if (tagsstart[id].tagname === tagsend[endid].tagname)
+            {
+                if(!tagsend[endid].isused)
+                {
+                    blocks.push(new tags(tagsstart[id].tagname, tagsstart[id].index, tagsend[endid].index));
+                    tagsend[endid].isused = true;
+                    continue mainloop;
+                }
+            }
+        }
+    }
     console.log(tagsstart);
     console.log(tagsend);
-
-    tagsstart.forEach((start,index) =>
-    {
-        tagsend.forEach((end,eindex) =>
-        {
-            if (start.tagname === end.tagname)
-            {
-                blocks.push(new tags(start.tagname, start.index, end.index));
-                return;
-            }
-        });
-        
-    });
+    console.log(blocks);
 
      for (id in blocks)
      {
@@ -170,8 +174,22 @@ function UpdateMain()
              maintext.innerHTML = textarray.join("");
 
             /*I know, I know, this part of the code is really really horrible and hard to understand.
-             I will fix  it, I promise.*/ 
+             I will fix  it, I promise.*/
          }
+         else if(blocks[id].tagname == "bold")
+         {
+            // var difference = id*(([...'<b>'].length + [...'</b>'].length) - (("&lt;".length + blocks[id].tagname.length + "&gt;".length + "&lt:/".length) + (blocks[id].tagname.length + "&gt;".length)));//Difference in index created by previous added divs to the text
+
+            // textarray = helper.insertArray(textarray, [...'<b>'], (blocks[id].startindex + blocks[id].tagname.length + 4) + difference); //After < + the name of the tag + >
+            // textarray = helper.insertArray(textarray, [...'</b>'], (blocks[id].endindex + [...'<b>'].length) + difference); //Considering the new addition to the array. so we should shift the index.
+           
+            // //Removing the tags
+            // textarray.splice((blocks[id].startindex - 4) + difference,"&lt;".length + blocks[id].tagname.length + "&gt;".length);
+            // textarray.splice((blocks[id].endindex + [...'<b>'].length + [...'</b>'].length - ("&lt;".length + blocks[id].tagname.length + "&gt;".length) + difference), "&lt:/".length + blocks[id].tagname.length + "&gt;".length);
+           
+            // maintext.innerHTML = textarray.join("");
+         }
+
      }
 
     hljs.initHighlighting.called = false;
@@ -181,7 +199,6 @@ function UpdateMain()
     // let codediv = document.getElementsByClassName("code-text");
     // for (div in codediv)
     // {
-    //     console.log(codediv[div]);
     //     hljs.highlightBlock(codediv[div]);
     // }
 }
@@ -270,3 +287,5 @@ function NewMain()
         filepath.innerHTML = "NewFile";
     }
 }
+
+//TODO : ADD REPLACE TAG FUNCTION
